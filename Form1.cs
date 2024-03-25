@@ -32,11 +32,20 @@ namespace BLA
                 return prompt.ShowDialog() == DialogResult.OK ? textBox.Text : "";
             }
         }
-
+        int x = 2;
+        int y = 0;
         private void Sign_Out(object sender, EventArgs e)
         {
+
             string promptName = Prompt.ShowDialog("Name", "Sign Out");
             string promptPeriod = Prompt.ShowDialog("Period", "Sign Out");
+            dataGridView1[x, y].Value = promptName;
+            dataGridView1[x + 1, y].Value = promptPeriod;
+            dataGridView1.Rows.Add();
+            x++;
+            y++;
+
+
         }
 
         private void SignIn_Click(object sender, EventArgs e)
