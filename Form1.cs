@@ -35,7 +35,8 @@ namespace BLA
 
         private void Sign_Out(object sender, EventArgs e)
         {
-            string promptValue = Prompt.ShowDialog("Test", "123");
+            string promptName = Prompt.ShowDialog("Name", "Sign Out");
+            string promptPeriod = Prompt.ShowDialog("Period", "Sign Out");
         }
 
         private void SignIn_Click(object sender, EventArgs e)
