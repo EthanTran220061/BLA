@@ -1,7 +1,8 @@
-﻿using System.Data;
+﻿using System;
+using System.Data;
 using System.Text;
-using Microsoft.Office;
-using Microsoft.Office.Interop.Excel;
+using System.IO;
+using System.Windows.Forms;
 
 namespace BLA
 {
@@ -23,9 +24,9 @@ namespace BLA
                     Text = caption,
                     StartPosition = FormStartPosition.CenterScreen
                 };
-                System.Windows.Forms.Label textLabel = new System.Windows.Forms.Label() { Left = 50, Top = 20, Text = text };
-                System.Windows.Forms.TextBox textBox = new System.Windows.Forms.TextBox() { Left = 50, Top = 50, Width = 400 };
-                System.Windows.Forms.Button confirmation = new System.Windows.Forms.Button() { Text = "Ok", Left = 350, Width = 100, Top = 70, DialogResult = DialogResult.OK };
+                Label textLabel = new Label() { Left = 50, Top = 20, Text = text };
+                TextBox textBox = new TextBox() { Left = 50, Top = 50, Width = 400 };
+                Button confirmation = new Button() { Text = "Ok", Left = 350, Width = 100, Top = 70, DialogResult = DialogResult.OK };
                 confirmation.Click += (sender, e) => { prompt.Close(); };
                 prompt.Controls.Add(textBox);
                 prompt.Controls.Add(confirmation);
@@ -94,26 +95,54 @@ namespace BLA
 
         private void Save_Data_Click(object sender, EventArgs e)
         {
+            SaveFileDialog saveDialog = new SaveFileDialog();
+            saveDialog.Filter = "CSV File (*.csv)|*.csv";
+            saveDialog.FileName = "DataGridViewExport.csv";
+            if (saveDialog.ShowDialog() == DialogResult.OK)
+            {
+                ExportToCSV(dataGridView1, saveDialog.FileName);
+            }
 
+        }
+        private void ExportToCSV(DataGridView dataGridView, string fileName)
+        {
+            try
+            {
+                // Creating CSV file
+                StreamWriter sw = new StreamWriter(fileName);
+
+                // Writing headers
+                for (int i = 0; i < dataGridView.ColumnCount; i++)
+                {
+                    sw.Write(dataGridView.Columns[i].HeaderText);
+                    if (i < dataGridView.ColumnCount - 1)
+                        sw.Write(",");
+                }
+                sw.WriteLine();
+
+                // Writing data
+                for (int j = 0; j < dataGridView.Rows.Count; j++)
+                {
+                    for (int k = 0; k < dataGridView.Columns.Count; k++)
+                    {
+                        if (dataGridView.Rows[j].Cells[k].Value != null)
+                            sw.Write(dataGridView.Rows[j].Cells[k].Value.ToString());
+                        if (k < dataGridView.Columns.Count - 1)
+                            sw.Write(",");
+                    }
+                    sw.WriteLine();
+                }
+                sw.Flush();
+                sw.Close();
+                MessageBox.Show("Data exported successfully.", "Export Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error: " + ex.Message, "Export Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
 
-        private void iSave()
-
-        { 
-            Microsoft.Office.Interop.Excel._Application app = new Microsoft.Office.Interop.Excel.Application();
-            Microsoft.Office.Interop.Excel._Workbook workbook = app.Workbooks.Add(Type.Missing);
-            Microsoft.Office.Interop.Excel._Worksheet worksheet = null;
-
-            app.Visible = true;
-            
-            Microsoft.Office.Interop.Excel.Worksheet sh = (Microsoft.Office.Interop.Excel.Worksheet)workbook.Sheets["Sheet1"];
-            worksheet = Workbook.ActiveSheet;
-            worksheet.Name = "Exported from gridview";
-
-
-
-        }
 
     }
 
