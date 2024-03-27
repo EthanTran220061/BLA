@@ -75,7 +75,7 @@ namespace BLA
             }
             else
             {
-                dataGridView1[x + 3, i].Value = message + dataGridView1[x, y].Value;
+                dataGridView1[x + 3, i].Value = message + dataGridView1[x, i].Value;
                 DateTime currentTime = DateTime.Now;
                 dataGridView1[x - 1, i].Value = currentTime;
                 i++;
@@ -104,11 +104,12 @@ namespace BLA
             }
 
         }
+        
+
         private void ExportToCSV(DataGridView dataGridView, string fileName)
         {
             try
             {
-                // Creating CSV file
                 StreamWriter sw = new StreamWriter(fileName);
 
                 // Writing headers
@@ -116,7 +117,7 @@ namespace BLA
                 {
                     sw.Write(dataGridView.Columns[i].HeaderText);
                     if (i < dataGridView.ColumnCount - 1)
-                        sw.Write(",");
+                        sw.Write(", ");
                 }
                 sw.WriteLine();
 
@@ -126,9 +127,9 @@ namespace BLA
                     for (int k = 0; k < dataGridView.Columns.Count; k++)
                     {
                         if (dataGridView.Rows[j].Cells[k].Value != null)
-                            sw.Write(dataGridView.Rows[j].Cells[k].Value.ToString());
-                        if (k < dataGridView.Columns.Count - 1)
-                            sw.Write(",");
+                            sw.Write(dataGridView.Rows[j].Cells[k].Value.ToString() + " ");
+                        //if (k < dataGridView.Columns.Count - 1)
+                            //sw.Write(".");
                     }
                     sw.WriteLine();
                 }
@@ -141,6 +142,7 @@ namespace BLA
                 MessageBox.Show("Error: " + ex.Message, "Export Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
 
 
 
